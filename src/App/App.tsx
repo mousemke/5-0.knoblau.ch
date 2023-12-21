@@ -46,7 +46,7 @@ const App = (): JSX.Element => {
               className={classes.filterInput}
               defaultValue={""}
               id={classes.filterInput}
-              onChange={(e) => setFilter(e.target.value)}
+              onChange={(e) => setFilter(e.target.value.toLowerCase())}
               placeholder="Filter by Text"
               type="text"
             />
