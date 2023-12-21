@@ -49,8 +49,8 @@ export interface FiveOhDeckList {
 export type FiveOhDeckLists = FiveOhDeckList[];
 
 export interface FiveOhProps {
-  setModal: (modalType: string | null, slug: string | null) => void;
   setPreviewImage: (imageName: string | null) => void;
+  filter: string;
 }
 
 /**

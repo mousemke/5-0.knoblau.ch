@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import RowLink from "../common/RowLink";
 import Separator from "../common/Separator";
 import ContentWindow from "../common/ContentWindow";
@@ -79,11 +79,35 @@ const dedupeLists = (decks: FiveOhApiDeckLists): FiveOhDeckLists =>
     losses: Number(deck.wins.losses)
   }));
 
+  /**
+ *
+ * @param recipes
+ * @param filter
+ * @returns
+ */
+const filterByString = (decks: FiveOhDeckLists, filter: string) => {
+  const filteredDecks: FiveOhDeckLists = [];
+
+  decks.forEach((d) => {
+    const { main, sideboard, player } = d;
+
+    if (
+      player.toLowerCase().includes(filter) ||
+      main.allCards.some((c) => c.card_name.toLowerCase().includes(filter)) ||
+      sideboard.allCards.some((c) => c.card_name.toLowerCase().includes(filter))
+    ) {
+      filteredDecks.push(d);
+    }
+  });
+
+  return filteredDecks;
+};
+
 /**
  * The list of all 5-0 decks
  */
 const FiveOh = (props: FiveOhProps): JSX.Element => {
-  const { setPreviewImage } = props;
+  const { setPreviewImage, filter } = props;
 
   const [decksArray, setDecksArray] = useState<FiveOhDeckLists>([]);
   const classes = useStyles();
@@ -97,6 +121,9 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
     imageTimeout = setTimeout(() => setPreviewImage(card.card_name), 1000);
   }, []);
 
+  /**
+   *
+   */
   useEffect(() => {
     const date = localStorage.getItem("decks_retrieval_date");
     const now = Date.now();
@@ -121,11 +148,21 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
     }
   }, []);
 
+  /**
+   *
+   */
+  const visibleDecks = useMemo(() =>
+    filter.length !== 0 ?
+      filterByString(decksArray, filter) :
+       decksArray,
+    [filter, decksArray]
+  );
+
   return (
     <>
-      {decksArray.length !== 0 ? (
+      {visibleDecks.length !== 0 ? (
         <>
-          {decksArray.map((deck: FiveOhDeckList, i: number) => {
+          {visibleDecks.map((deck: FiveOhDeckList, i: number) => {
             const date = deck.instanceId.split("_")[1];
 
             return (
@@ -166,6 +203,7 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
                         className={classes.cardLink}
                         key={c}
                         target="_blank"
+                        onHover={loadImage(card)}
                         href={`https://scryfall.com/search?q=!"${card.card_name}"`}
                       >
                         <span>{card.qty}</span>
@@ -177,7 +215,7 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
               </ContentWindow>
             );
           })}
-        </>) : <ContentWindow>Loading...</ContentWindow>}
+        </>) : <ContentWindow>{filter.length !== 0 ? "No results found" : "Loading..."}</ContentWindow>}
     </>
   );
 };
