@@ -25,7 +25,7 @@ export default {
     terser(),
     html({
       meta: [{ name: "robots", content: "noindex,nofollow", charset: "utf-8" }],
-      title: "fnm.knoblau.ch"
+      title: "5-0.knoblau.ch"
     })
   ]
 };

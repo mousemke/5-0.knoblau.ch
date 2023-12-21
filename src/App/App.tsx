@@ -5,6 +5,7 @@ import StyledWindow from "../common/StyledWindow";
 import Link from "../common/Link";
 
 import FiveOh from "../FiveOh";
+import PreviewCard from "../PreviewCard";
 
 import useStyles from "./App.styles";
 
@@ -28,6 +29,7 @@ const setQueryParam = (param: string | null, slug: string | null = null) => {
  */
 const App = (): JSX.Element => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const setModal = useCallback(
     (
@@ -116,7 +118,8 @@ const App = (): JSX.Element => {
           Team Crossfit Meat Factory
         </h4>
       </StyledWindow>
-      <FiveOh setModal={setModal}/>
+      {previewImage ? <PreviewCard previewImage={previewImage}/> : null}
+      <FiveOh setModal={setModal} setPreviewImage={setPreviewImage}/>
     </>
   );
 };

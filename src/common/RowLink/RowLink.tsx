@@ -5,7 +5,7 @@ import useStyles from "./RowLink.styles";
 import type { RowLinkProps } from "./RowLink.types";
 
 const RowLink = (props: RowLinkProps): JSX.Element => {
-  const { children, className = "", href, onClick, target } = props;
+  const { children, className = "", href, onClick, onHover, target } = props;
 
   const classes = useStyles();
 
@@ -18,6 +18,7 @@ const RowLink = (props: RowLinkProps): JSX.Element => {
     className: combinedClasses,
     href,
     onClick,
+    onMouseEnter: onHover,
     role: href ? undefined : "button",
     target
   };

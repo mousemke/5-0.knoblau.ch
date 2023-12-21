@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import RowLink from "../common/RowLink";
 import Separator from "../common/Separator";
 import ContentWindow from "../common/ContentWindow";
@@ -83,9 +83,19 @@ const dedupeLists = (decks: FiveOhApiDeckLists): FiveOhDeckLists =>
  * The list of all 5-0 decks
  */
 const FiveOh = (props: FiveOhProps): JSX.Element => {
-  // const { setModal } = props;
+  const { setPreviewImage } = props;
+
   const [decksArray, setDecksArray] = useState<FiveOhDeckLists>([]);
   const classes = useStyles();
+
+  let imageTimeout: NodeJS.Timeout | null = null;
+
+  const loadImage = useCallback((card: FiveOhCard) => () => {
+    if (imageTimeout) {
+      clearTimeout(imageTimeout);
+    }
+    imageTimeout = setTimeout(() => setPreviewImage(card.card_name), 1000);
+  }, []);
 
   useEffect(() => {
     const date = localStorage.getItem("decks_retrieval_date");
@@ -111,11 +121,6 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
     }
   }, []);
 
-  // const onClick = useCallback(
-  //   (deck: Deck) => () => setModal("deck", deck.slug),
-  //   []
-  // );
-
   return (
     <>
       {decksArray.length !== 0 ? (
@@ -140,6 +145,7 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
                             className={classes.cardLink}
                             key={c}
                             target="_blank"
+                            onHover={loadImage(card)}
                             href={`https://scryfall.com/search?q=!"${card.card_name}"`}
                           >
                             <span>{card.qty}</span>
