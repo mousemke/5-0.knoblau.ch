@@ -20,6 +20,7 @@ import type {
 } from "./FiveOh.types";
 
 const NO_CARD_TYPE = "Other";
+const DAYS_TO_DISPLAY = 7;
 
 /**
  *
@@ -30,12 +31,22 @@ const sortBoard = (board: FiveOhApiCard[]): FiveOhBoard => {
   const dedupedBoard: {[key: string]: FiveOhCard} = {};
 
   board.forEach((card: FiveOhApiCard) => {
-    const { card_attributes, ...filteredCard } = card;
+    const {
+      card_attributes,
+      qty
+    } = card;
+
+    const {
+      card_name,
+      card_type,
+      rarity
+    } = card_attributes;
+
     const formattedCard: FiveOhCard = {
-      ...filteredCard,
-      qty: Number(filteredCard.qty),
-      ...card.card_attributes,
-      card_type: (card.card_attributes.card_type || NO_CARD_TYPE).trim() as FiveOhCardType,
+      card_name,
+      rarity,
+      qty: Number(qty),
+      card_type: (card_type || NO_CARD_TYPE).trim() as FiveOhCardType,
     };
 
     const cardName = formattedCard.card_name;
@@ -104,7 +115,43 @@ const filterByString = (decks: FiveOhDeckLists, filter: string) => {
 };
 
 /**
- * The list of all 5-0 decks
+ *
+ * @param date
+ * @returns
+ */
+const formatDate = (date: Date) => {
+  const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+  const month = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(date);
+  const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ *
+ * @param date
+ * @param decksArray
+ * @param setDecksArray
+ */
+const retrieveDecklistsForDate = (
+  date: string,
+): Promise<{[key: string]: FiveOhDeckLists}> => {
+  return new Promise((resolve, reject) => {
+
+    const decks = localStorage.getItem(`${date}-decks`);
+    if (decks) {
+      resolve({[date]: JSON.parse(decks)});
+    } else {
+      fetch(`https://census.daybreakgames.com/s:dgc/get/mtgo:v1/league_cover_page?publish_date=${date}&name=Modern%20League&c:join=league_decklist_by_id^on:instance_id^to:instance_id^rawList:1^inject_at:decklists`)
+        .then((res: any) => res.json())
+        .then((res: FiveOhApiData) => dedupeLists(res.league_cover_page_list[0].decklists))
+        .then((decks: FiveOhDeckLists) => resolve({[date]: decks}));
+    }
+  });
+}
+
+/**
+ * The list of all 5-0 decks for DAYS_TO_DISPLAY days
  */
 const FiveOh = (props: FiveOhProps): JSX.Element => {
   const { setPreviewImage, filter } = props;
@@ -125,27 +172,27 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
    *
    */
   useEffect(() => {
-    const date = localStorage.getItem("decks_retrieval_date");
-    const now = Date.now();
-    const oneDay = 1000 * 60 * 60 * 24;
-    const oneDayAgo = now - oneDay;
+    const dateObj = new Date();
+    const datesArray: string[] = [];
 
-    if (date && Number(date) > oneDayAgo) {
-      const decks = localStorage.getItem("decks");
-      if (decks) {
-        setDecksArray(JSON.parse(decks));
-      }
-    } else {
-      fetch("https://census.daybreakgames.com/s:dgc/get/mtgo:v1/league_cover_page?instance_id=7787_2023-12-21&c:join=league_decklist_by_id^on:instance_id^to:instance_id^rawList:1^inject_at:decklists")
-      .then((res: any) => res.json())
-      .then((res: FiveOhApiData) => dedupeLists(res.league_cover_page_list[0].decklists))
-      .then((decks: FiveOhDeckLists) => {
-        setDecksArray(decks);
-
-        localStorage.setItem("decks", JSON.stringify(decks));
-        localStorage.setItem("decks_retrieval_date", Date.now().toString());
-      });
+    for (let i = 0; i < DAYS_TO_DISPLAY; i++) {
+      datesArray.push(formatDate(dateObj));
+      dateObj.setDate(dateObj.getDate() - 1);
     }
+
+    Promise.all(datesArray.map((date: string): Promise<{[key: string]: FiveOhDeckLists}> =>
+        retrieveDecklistsForDate(date))
+      )
+      .then((decks: {[key: string]: FiveOhDeckLists}[]) => {
+        localStorage.clear();
+
+        const decksObj = decks.reduce((prev, curr) => ({...prev, ...curr}), {});
+        Object.keys(decksObj).forEach((date) => {
+          localStorage.setItem(`${date}-decks`, JSON.stringify(decksObj[date]));
+        });
+
+        setDecksArray(Object.values(decksObj).flat())
+      });
   }, []);
 
   /**
@@ -160,6 +207,9 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
 
   return (
     <>
+      <ContentWindow className={classes.contentWindow}>
+        {visibleDecks.length} decks{filter.length !== 0 ? ` (filtered by "${filter}")` : ""}
+      </ContentWindow>
       {visibleDecks.length !== 0 ? (
         <>
           {visibleDecks.map((deck: FiveOhDeckList, i: number) => {
@@ -167,7 +217,9 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
 
             return (
               <ContentWindow key={i} className={classes.contentWindow}>
-                <h3>{deck.player} ({deck.wins}-{deck.losses})</h3>
+                <a id={deck.player}>
+                  <h3>{deck.player} ({deck.wins}-{deck.losses})</h3>
+                </a>
                 <h4>{date}</h4>
                 <Separator className={classes.seperator} />
                 {

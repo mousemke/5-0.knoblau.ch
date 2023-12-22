@@ -14,17 +14,8 @@ export type FiveOhCardType = keyof typeof FiveOhCardTypes;
 export interface FiveOhCard {
   card_name: string;
   card_type: FiveOhCardType;
-  cardset: string;
-  color: string;
-  colors: string[];
-  cost: string;
-  digitalobjectcatalogid: string;
   rarity: string;
-  docid: string;
-  leaguedeckid: string;
-  loginplayeventcourseid: string;
   qty: number;
-  sideboard: string;
 }
 
 export interface FiveOhBoard {
