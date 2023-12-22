@@ -31,8 +31,7 @@ export interface FiveOhDeckList {
   sideboard: FiveOhBoard;
   player: string;
   instanceId: string;
-  loginId: string;
-  loginplayeventcourseId: string;
+  archetype: string;
   wins: number;
   losses: number;
 }
@@ -42,6 +41,7 @@ export type FiveOhDeckLists = FiveOhDeckList[];
 export interface FiveOhProps {
   setPreviewImage: (imageName: string | null) => void;
   filter: string;
+  viewByArchetype: boolean;
 }
 
 /**

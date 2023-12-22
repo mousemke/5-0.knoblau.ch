@@ -5,7 +5,7 @@ import useStyles from "./RowLink.styles";
 import type { RowLinkProps } from "./RowLink.types";
 
 const RowLink = (props: RowLinkProps): JSX.Element => {
-  const { children, className = "", href, onClick, onHover, target } = props;
+  const { children, className = "", href, id, onClick, onHover, target } = props;
 
   const classes = useStyles();
 
@@ -20,7 +20,8 @@ const RowLink = (props: RowLinkProps): JSX.Element => {
     onClick,
     onMouseEnter: onHover,
     role: href ? undefined : "button",
-    target
+    target,
+    id
   };
 
   return <a {...options}>{children}</a>;

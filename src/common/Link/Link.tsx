@@ -5,7 +5,7 @@ import useStyles from "./Link.styles";
 import type { LinkProps } from "./Link.types";
 
 const Link = (props: LinkProps): JSX.Element => {
-  const { children, className = "", href, onClick, target } = props;
+  const { children, className = "", href, id, onClick, target } = props;
 
   const classes = useStyles();
 
@@ -20,6 +20,7 @@ const Link = (props: LinkProps): JSX.Element => {
   const options = {
     className: combinedClasses,
     href,
+    id,
     onClick,
     role: href ? undefined : "button",
     target

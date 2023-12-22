@@ -15,8 +15,14 @@ import useStyles from "./App.styles";
 const App = (): JSX.Element => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("");
+  const [viewByArchetype, setViewByArchetype] = useState<boolean>(false);
 
   const classes = useStyles();
+
+  const changeView = useCallback(() =>
+    setViewByArchetype(!viewByArchetype),
+    [viewByArchetype]
+  );
 
   return (
     <>
@@ -50,11 +56,14 @@ const App = (): JSX.Element => {
               placeholder="Filter by Text"
               type="text"
             />
+            <Link className={classes.archetypeSwitchLink} onClick={changeView}>
+              View by Archetype (experimental)
+            </Link>
           </StyledWindow>
         </div>
       </div>
       {previewImage ? <PreviewCard previewImage={previewImage}/> : null}
-      <FiveOh filter={filter} setPreviewImage={setPreviewImage}/>
+      <FiveOh viewByArchetype={viewByArchetype} filter={filter} setPreviewImage={setPreviewImage}/>
     </>
   );
 };

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import RowLink from "../common/RowLink";
-import Separator from "../common/Separator";
 import ContentWindow from "../common/ContentWindow";
-import { FiveOhCardTypes } from "./FiveOh.types";
+import HeaderWindow from "../common/HeaderWindow";
+import { filterByArchetype, getArchetype } from "./filterByArchetype";
+import OneDeck from "../OneDeck";
 
 import useStyles from "./FiveOh.styles";
 
@@ -78,17 +78,22 @@ const sortBoard = (board: FiveOhApiCard[]): FiveOhBoard => {
  * @param decks
  * @returns
  */
-const dedupeLists = (decks: FiveOhApiDeckLists): FiveOhDeckLists =>
-  decks.map((deck: FiveOhApiDeckList) => ({
-    main: sortBoard(deck.main_deck),
-    sideboard: sortBoard(deck.sideboard_deck),
-    player: deck.player,
-    instanceId: deck.instance_id,
-    loginId: deck.loginid,
-    loginplayeventcourseId: deck.loginplayeventcourseid,
-    wins: Number(deck.wins.wins),
-    losses: Number(deck.wins.losses)
-  }));
+const dedupeLists = async (decks: FiveOhApiDeckLists): Promise<FiveOhDeckLists> =>
+  decks.map((deck: FiveOhApiDeckList) => {
+    const newDeckObj = {
+      main: sortBoard(deck.main_deck),
+      sideboard: sortBoard(deck.sideboard_deck),
+      player: deck.player,
+      instanceId: deck.instance_id,
+      wins: Number(deck.wins.wins),
+      losses: Number(deck.wins.losses),
+      archetype: ""
+    };
+
+    newDeckObj.archetype = getArchetype(newDeckObj);
+
+    return newDeckObj;
+  });
 
   /**
  *
@@ -154,9 +159,12 @@ const retrieveDecklistsForDate = (
  * The list of all 5-0 decks for DAYS_TO_DISPLAY days
  */
 const FiveOh = (props: FiveOhProps): JSX.Element => {
-  const { setPreviewImage, filter } = props;
+  const { viewByArchetype, setPreviewImage, filter } = props;
 
   const [decksArray, setDecksArray] = useState<FiveOhDeckLists>([]);
+  const [decksByArchetype, setDecksByArchetype] = useState<{[key: string]: FiveOhDeckLists}>({});
+  const [activeArchetype, setActiveArchetype] = useState<string | null>(null);
+
   const classes = useStyles();
 
   let imageTimeout: NodeJS.Timeout | null = null;
@@ -191,7 +199,10 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
           localStorage.setItem(`${date}-decks`, JSON.stringify(decksObj[date]));
         });
 
-        setDecksArray(Object.values(decksObj).flat())
+        const allTheDecks = Object.values(decksObj).flat();
+
+        setDecksArray(allTheDecks);
+        setDecksByArchetype(filterByArchetype(allTheDecks));
       });
   }, []);
 
@@ -205,69 +216,34 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
     [filter, decksArray]
   );
 
+  const setActiveArchetypeHandler = useCallback((archetype: string) => () =>
+  activeArchetype === archetype ? setActiveArchetype(null) : setActiveArchetype(archetype),
+    [activeArchetype]
+  );
+
   return (
     <>
-      <ContentWindow className={classes.contentWindow}>
-        {visibleDecks.length} decks{filter.length !== 0 ? ` (filtered by "${filter}")` : ""}
-      </ContentWindow>
-      {visibleDecks.length !== 0 ? (
-        <>
-          {visibleDecks.map((deck: FiveOhDeckList, i: number) => {
-            const date = deck.instanceId.split("_")[1];
-
-            return (
-              <ContentWindow key={i} className={classes.contentWindow}>
-                <a id={deck.player}>
-                  <h3>{deck.player} ({deck.wins}-{deck.losses})</h3>
-                </a>
-                <h4>{date}</h4>
-                <Separator className={classes.seperator} />
-                {
-                  Object.keys(deck.main.sorted).sort().map((type: string, t: number) => (
-                    <div className={classes.cardType} key={t}>
-                      <div className={classes.cardTypeTitle}>
-                        {FiveOhCardTypes[type as FiveOhCardType] || type}
-                      </div>
-                      <div>
-                        {deck.main.sorted[type].map((card: FiveOhCard, c: number) => (
-                          <RowLink
-                            className={classes.cardLink}
-                            key={c}
-                            target="_blank"
-                            onHover={loadImage(card)}
-                            href={`https://scryfall.com/search?q=!"${card.card_name}"`}
-                          >
-                            <span>{card.qty}</span>
-                            <span className={classes.cardName}>{card.card_name}</span>
-                          </RowLink>
-                        ))}
-                      </div>
-                    </div>
-                  ))
-                }
-                <div className={classes.cardCount}>{deck.main.count} cards</div>
-                <Separator className={classes.seperator} />
-                <h4>Sideboard ({deck.sideboard.count})</h4>
-                {
-                  deck.sideboard.allCards.map((card: FiveOhCard, c: number) => {
-                    return (
-                      <RowLink
-                        className={classes.cardLink}
-                        key={c}
-                        target="_blank"
-                        onHover={loadImage(card)}
-                        href={`https://scryfall.com/search?q=!"${card.card_name}"`}
-                      >
-                        <span>{card.qty}</span>
-                        <span className={classes.cardName}>{card.card_name}</span>
-                      </RowLink>
-                    );
-                  })
-                }
-              </ContentWindow>
-            );
-          })}
-        </>) : <ContentWindow>{filter.length !== 0 ? "No results found" : "Loading..."}</ContentWindow>}
+      {decksArray.length !== 0 ? (
+        <HeaderWindow className={classes.contentWindow}>
+          {visibleDecks.length} decks{filter.length !== 0 ? ` (filtered by "${filter}")` : ""}
+        </HeaderWindow>
+      ) : <HeaderWindow>Loading...</HeaderWindow>}
+      {viewByArchetype === false ? (
+        visibleDecks.map((deck: FiveOhDeckList, i: number) => (
+          <OneDeck key={i} deck={deck} loadImage={loadImage} />
+        ))
+      ) : (
+        Object.keys(decksByArchetype).sort().map((archetype: string, i: number) => (
+          <>
+            <HeaderWindow key={i} onClick={setActiveArchetypeHandler(archetype)}>
+              {archetype}
+            </HeaderWindow>
+            {activeArchetype === archetype && decksByArchetype[archetype].map((deck: FiveOhDeckList, i: number) => (
+              <OneDeck key={i} deck={deck} loadImage={loadImage} />
+            ))}
+          </>
+        ))
+      )}
     </>
   );
 };

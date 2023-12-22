@@ -18,6 +18,9 @@ const useStyles = createUseStyles(
       pointerEvents: "none",
       top: 0
     },
+    archetypeSwitchLink: {
+      padding: "16px 0"
+    },
     backgroundWrapper: {
       position: "fixed",
       width: "100%",
@@ -41,7 +44,7 @@ const useStyles = createUseStyles(
     titleWindow: {
       top: 30,
       width: 300,
-      height: 100,
+      height: 140,
       marginBottom: 50,
       paddingBottom: 40
     },
