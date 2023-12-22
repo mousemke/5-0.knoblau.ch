@@ -5,6 +5,7 @@ import typescript from "@rollup/plugin-typescript";
 import globals from "rollup-plugin-node-globals";
 import { terser } from "rollup-plugin-terser";
 import html from "@rollup/plugin-html";
+import json from "@rollup/plugin-json";
 
 export default {
   input: ["./src/index.tsx"],
@@ -13,6 +14,7 @@ export default {
     format: "iife"
   },
   plugins: [
+    json(),
     typescript(),
     resolve({
       preferBuiltins: true,

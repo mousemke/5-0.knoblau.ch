@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import ContentWindow from "../common/ContentWindow";
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import HeaderWindow from "../common/HeaderWindow";
 import { filterByArchetype, getArchetype } from "./filterByArchetype";
 import OneDeck from "../OneDeck";
+
+import config from "../../package.json"
 
 import useStyles from "./FiveOh.styles";
 
@@ -143,7 +144,7 @@ const retrieveDecklistsForDate = (
 ): Promise<{[key: string]: FiveOhDeckLists}> => {
   return new Promise((resolve, reject) => {
 
-    const decks = localStorage.getItem(`${date}-decks`);
+    const decks = localStorage.getItem(`${date}-decks-${config.version}`);
     if (decks) {
       resolve({[date]: JSON.parse(decks)});
     } else {
@@ -196,7 +197,7 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
 
         const decksObj = decks.reduce((prev, curr) => ({...prev, ...curr}), {});
         Object.keys(decksObj).forEach((date) => {
-          localStorage.setItem(`${date}-decks`, JSON.stringify(decksObj[date]));
+          localStorage.setItem(`${date}-decks-${config.version}`, JSON.stringify(decksObj[date]));
         });
 
         const allTheDecks = Object.values(decksObj).flat();
@@ -234,14 +235,14 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
         ))
       ) : (
         Object.keys(decksByArchetype).sort().map((archetype: string, i: number) => (
-          <>
-            <HeaderWindow key={i} onClick={setActiveArchetypeHandler(archetype)}>
+          <Fragment key={i}>
+            <HeaderWindow onClick={setActiveArchetypeHandler(archetype)}>
               {archetype}
             </HeaderWindow>
             {activeArchetype === archetype && decksByArchetype[archetype].map((deck: FiveOhDeckList, i: number) => (
               <OneDeck key={i} deck={deck} loadImage={loadImage} />
             ))}
-          </>
+          </Fragment>
         ))
       )}
     </>
