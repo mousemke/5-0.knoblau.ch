@@ -115,7 +115,7 @@ export const archetypeSignposts = {
   "Mono G Tron": [
     "urza's mine",
     "oblivion stone",
-    "ugin, the spirit dragon",
+    "wurmcoil engine",
     "forest",
   ],
   "Izzet Prowess": [
@@ -141,5 +141,65 @@ export const archetypeSignposts = {
     "subtlety",
     "teferi, time raveler",
     "solitude",
+  ],
+  "Dimir Death's Shadow": [
+    "thoughtseize",
+    "stubborn denial",
+    "drown in the loch",
+    "death's shadow",
+  ],
+  "Izzet Wizards": [
+    "snapcaster mage",
+    "spellstutter sprite",
+    "subtlety",
+    "murktide regent",
+  ],
+  "Grixis Death's Shadow": [
+    "thoughtseize",
+    "underworld breach",
+    "drown in the loch",
+    "death's shadow",
+  ],
+  "5c Humans": [
+    "aether vial",
+    "unclaimed territory",
+    "champion of the parish",
+    "noble hierarch",
+  ],
+  "Jeskai Breach": [
+    "underworld breach",
+    "teferi, time raveler",
+    "prismatic ending",
+    "mishra's bauble",
+  ],
+  "Azorius Day's Undoing": [
+    "day's undoing",
+    "teferi, time raveler",
+    "subtlety",
+    "narset, parter of veils"
+  ],
+  "Mill": [
+    "surgical extraction",
+    "archive trap",
+    "field of ruin",
+    "ruin crab",
+  ],
+  "Rakdos Goblins": [
+    "mogg fanatic",
+    "goblin matron",
+    "kiki-jiki, mirror breaker",
+    "consicuous snoop",
+  ],
+  "Golgari Scam": [
+    "not dead after all",
+    "grist, the hunger tide",
+    "grief",
+    "tarmogoyf",
+  ],
+  "Azorius Humans": [
+    "aether vial",
+    "unclaimed territory",
+    "champion of the parish",
+    "sky hussar",
   ],
 }

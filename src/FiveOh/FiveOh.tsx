@@ -237,7 +237,7 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
         Object.keys(decksByArchetype).sort().map((archetype: string, i: number) => (
           <Fragment key={i}>
             <HeaderWindow onClick={setActiveArchetypeHandler(archetype)}>
-              {archetype}
+              {archetype} - ({decksByArchetype[archetype].length} decks)
             </HeaderWindow>
             {activeArchetype === archetype && decksByArchetype[archetype].map((deck: FiveOhDeckList, i: number) => (
               <OneDeck key={i} deck={deck} loadImage={loadImage} />
