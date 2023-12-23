@@ -34,7 +34,7 @@ const OneDeck = (props: OneDeckProps): JSX.Element => {
         Object.keys(deck.main.sorted).sort().map((type: string, t: number) => (
           <div className={classes.cardType} key={t}>
             <div className={classes.cardTypeTitle}>
-              {FiveOhCardTypes[type as FiveOhCardType] || type}
+              {FiveOhCardTypes[type as FiveOhCardType] || type} ({deck.main.sorted[type].reduce((prev, curr) => prev + curr.qty, 0)})
             </div>
             <div>
               {deck.main.sorted[type].map((card: FiveOhCard, c: number) => (
