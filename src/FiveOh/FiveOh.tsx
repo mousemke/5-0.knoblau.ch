@@ -103,6 +103,10 @@ const dedupeLists = async (decks: FiveOhApiDeckLists): Promise<FiveOhDeckLists> 
  * @returns
  */
 const filterByString = (decks: FiveOhDeckLists, filter: string) => {
+  if (filter.length === 0) {
+    return decks;
+  }
+
   const filteredDecks: FiveOhDeckLists = [];
 
   decks.forEach((d) => {
@@ -211,9 +215,7 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
    *
    */
   const visibleDecks = useMemo(() =>
-    filter.length !== 0 ?
-      filterByString(decksArray, filter) :
-       decksArray,
+    filterByString(decksArray, filter),
     [filter, decksArray]
   );
 
@@ -234,16 +236,20 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
           <OneDeck key={i} deck={deck} loadImage={loadImage} />
         ))
       ) : (
-        Object.keys(decksByArchetype).sort().map((archetype: string, i: number) => (
-          <Fragment key={i}>
-            <HeaderWindow onClick={setActiveArchetypeHandler(archetype)}>
-              {archetype} - ({decksByArchetype[archetype].length} decks)
-            </HeaderWindow>
-            {activeArchetype === archetype && decksByArchetype[archetype].map((deck: FiveOhDeckList, i: number) => (
-              <OneDeck key={i} deck={deck} loadImage={loadImage} />
-            ))}
-          </Fragment>
-        ))
+        Object.keys(decksByArchetype).sort().map((archetype: string, i: number) => {
+          const visibleArchetypeDecks = filterByString(decksByArchetype[archetype], filter);
+
+          return visibleArchetypeDecks.length > 0 ? (
+            <Fragment key={i}>
+              <HeaderWindow onClick={setActiveArchetypeHandler(archetype)}>
+                {archetype} - ({visibleArchetypeDecks.length} decks)
+              </HeaderWindow>
+              {activeArchetype === archetype && visibleArchetypeDecks.map((deck: FiveOhDeckList, i: number) => (
+                <OneDeck key={i} deck={deck} loadImage={loadImage} />
+              ))}
+            </Fragment>
+          ) : null;
+        })
       )}
     </>
   );
