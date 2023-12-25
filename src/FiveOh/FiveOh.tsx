@@ -154,7 +154,7 @@ const retrieveDecklistsForDate = (
     } else {
       fetch(`https://census.daybreakgames.com/s:dgc/get/mtgo:v1/league_cover_page?publish_date=${date}&name=Modern%20League&c:join=league_decklist_by_id^on:instance_id^to:instance_id^rawList:1^inject_at:decklists`)
         .then((res: any) => res.json())
-        .then((res: FiveOhApiData) => dedupeLists(res.league_cover_page_list[0].decklists))
+        .then((res: FiveOhApiData) => dedupeLists(res.league_cover_page_list[0]?.decklists || []))
         .then((decks: FiveOhDeckLists) => resolve({[date]: decks}));
     }
   });
@@ -178,7 +178,7 @@ const FiveOh = (props: FiveOhProps): JSX.Element => {
     if (imageTimeout) {
       clearTimeout(imageTimeout);
     }
-    imageTimeout = setTimeout(() => setPreviewImage(card.card_name), 1000);
+    imageTimeout = setTimeout(() => setPreviewImage(card.card_name), 400);
   }, []);
 
   /**

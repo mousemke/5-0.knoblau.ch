@@ -126,7 +126,7 @@ export const archetypeSignposts = {
   ],
   "Mono B Scam Rack": [
     "grief",
-    "notr dead after all",
+    "not dead after all",
     "the rack",
     "liliana of the veil"
   ],
@@ -151,12 +151,12 @@ export const archetypeSignposts = {
   "Izzet Wizards": [
     "snapcaster mage",
     "spellstutter sprite",
-    "subtlety",
-    "murktide regent",
+    "sleep-cursed faerie",
+    "flame of anor",
   ],
   "Grixis Death's Shadow": [
     "thoughtseize",
-    "underworld breach",
+    "dragon's rage channeler",
     "drown in the loch",
     "death's shadow",
   ],
@@ -175,7 +175,7 @@ export const archetypeSignposts = {
   "Azorius Day's Undoing": [
     "day's undoing",
     "teferi, time raveler",
-    "subtlety",
+    "force of negation",
     "narset, parter of veils"
   ],
   "Mill": [
@@ -188,7 +188,7 @@ export const archetypeSignposts = {
     "mogg fanatic",
     "goblin matron",
     "kiki-jiki, mirror breaker",
-    "consicuous snoop",
+    "conspicuous snoop",
   ],
   "Golgari Scam": [
     "not dead after all",
@@ -198,8 +198,50 @@ export const archetypeSignposts = {
   ],
   "Azorius Humans": [
     "aether vial",
-    "unclaimed territory",
+    "coppercoat vanguard",
     "champion of the parish",
     "sky hussar",
   ],
+  "8-Cast Affinity": [
+    "thoughtcast",
+    "though monitor",
+    "frogmite",
+    "urza's saga"
+  ],
+  "Dimir Control": [
+    "the one ring",
+    "force of negation",
+    "archmage's charm",
+    "fatal push"
+  ],
+  "Eldrazi Tron": [
+    "urza's mine",
+    "thought-knot seer",
+    "warping wail",
+    "eldrazi temple"
+  ],
+  "Jund": [
+    "tarmogoyf",
+    "Wwenn and six",
+    "grist, the hunger tide",
+    "thoughtseize"
+  ],
+  "Esper Goryo": [
+    "goryo's vengeance",
+    "atraxa, grand unifier",
+    "griselbrand",
+    "ephemerate"
+  ],
+  "Mono U Tron": [
+    "urza's mine",
+    "force of negation",
+    "remand",
+    "karn, the great creator"
+  ],
+  "Dredge": [
+    "narcomoeba",
+    "golgari thug",
+    "silversmote ghoul",
+    "creeping chill"
+  ]
 }
