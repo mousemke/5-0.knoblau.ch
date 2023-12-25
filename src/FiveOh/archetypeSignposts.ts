@@ -16,7 +16,7 @@ export const archetypeSignposts = {
     "not dead after all",
     "dauthi voidwalker",
     "grief",
-    "molten collapse",
+    "terminate",
   ],
   "Golgari Yawgmoth": [
     "wall of roots",
@@ -229,7 +229,7 @@ export const archetypeSignposts = {
   "Esper Goryo": [
     "goryo's vengeance",
     "atraxa, grand unifier",
-    "griselbrand",
+    "grief",
     "ephemerate"
   ],
   "Mono U Tron": [
@@ -243,5 +243,23 @@ export const archetypeSignposts = {
     "golgari thug",
     "silversmote ghoul",
     "creeping chill"
+  ],
+  "5c Glimpse": [
+    "glimpse of tomorrow",
+    "atraxa, grand unifier",
+    "shardless agent",
+    "emrakul, the aeons torn"
+  ],
+  "5c Elementals": [
+    "solitude",
+    "nissa, resurgent animist",
+    "omnath, locus of creation",
+    "risen reef"
+  ],
+  "Prison Tron": [
+    "urza's mine",
+    "ensnaring bridge",
+    "serum powder",
+    "mystic forge"
   ]
 }

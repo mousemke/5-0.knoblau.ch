@@ -71,7 +71,11 @@ const sortBoard = (board: FiveOhApiCard[]): FiveOhBoard => {
   });
   const count = dedupedBoardArray.reduce((prev, curr) => prev + curr.qty, 0);
 
-  return { allCards: dedupedBoardArray, sorted: sortedBoard, count };
+   Object.keys(sortedBoard).forEach((type: string) => {
+    sortedBoard[type] = sortedBoard[type].sort(sortBoardByCardname)
+  });
+
+  return { allCards: dedupedBoardArray.sort(sortBoardByCardname), sorted: sortedBoard, count };
 }
 
 /**
@@ -136,6 +140,16 @@ const formatDate = (date: Date) => {
 
   return `${year}-${month}-${day}`;
 }
+
+/**
+ *
+ * @param a
+ * @param b
+ * @returns
+ */
+const sortBoardByCardname = (a: FiveOhCard, b: FiveOhCard): 1 | -1 => {
+  return (a.card_name < b.card_name) ? -1 :1;
+};
 
 /**
  *
