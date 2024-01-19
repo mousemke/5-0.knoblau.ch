@@ -20,10 +20,16 @@ const useStyles = createUseStyles(
       paddingLeft: 16
     },
     cardType: {
-      paddingTop: 16
+      paddingTop: 16,
+      minWidth: "20rem",
+      paddingRight: 50
     },
     cardTypeTitle: {
       marginBottom: 8
+    },
+    mainboardWrapper: {
+      display: "flex",
+      flexWrap: "wrap"
     }
   },
   {

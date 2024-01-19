@@ -70,7 +70,7 @@ export const archetypeSignposts = {
   "4c Creativity": [
     "indomitable creativity",
     "archon of cruelty",
-    "wrenn and six",
+    "leyline binding",
     "dwarven mine",
   ],
   "Saheeli Combo": [
@@ -130,11 +130,29 @@ export const archetypeSignposts = {
     "the rack",
     "liliana of the veil"
   ],
+  "Mono B Scam": [
+    "grief",
+    "not dead after all",
+    "the one ring",
+    "sheoldred, the apocalypse"
+  ],
+  "Boros Convoke": [
+    "knight-errant of eos",
+    "ornithopter",
+    "venerated loxodon",
+    "kuldotha rebirth"
+  ],
   "Grixis Control": [
     "counterspell",
     "orcish bowmasters",
     "flame of anor",
     "archmage's charm",
+  ],
+  "Naya Scapeshift": [
+    "scapeshift",
+    "dryad of the ilysian grove",
+    "wish",
+    "leyline binding",
   ],
   "Azorius Control": [
     "counterspell",
@@ -185,7 +203,7 @@ export const archetypeSignposts = {
     "ruin crab",
   ],
   "Rakdos Goblins": [
-    "mogg fanatic",
+    "auntie's hovel",
     "goblin matron",
     "kiki-jiki, mirror breaker",
     "conspicuous snoop",

@@ -30,6 +30,7 @@ const OneDeck = (props: OneDeckProps): JSX.Element => {
       </a>
       <h4>{date} ({deck.wins}-{deck.losses})</h4>
       <Separator className={classes.seperator} />
+      <div className={classes.mainboardWrapper} >
       {
         Object.keys(deck.main.sorted).sort().map((type: string, t: number) => (
           <div className={classes.cardType} key={t}>
@@ -53,6 +54,7 @@ const OneDeck = (props: OneDeckProps): JSX.Element => {
           </div>
         ))
       }
+      </div>
       <div className={classes.cardCount}>{deck.main.count} cards</div>
       <Separator className={classes.seperator} />
       <h4>Sideboard ({deck.sideboard.count})</h4>
